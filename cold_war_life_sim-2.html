@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cold War Life Simulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #eee;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #ff6b6b;
+            text-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px rgba(255, 107, 107, 0.5); }
+            to { text-shadow: 0 0 20px rgba(255, 107, 107, 0.8); }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 40px;
+            font-size: 0.9em;
+        }
+
+        .form-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4ecdc4;
+            font-weight: bold;
+            font-size: 0.95em;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        select:hover, input:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #4ecdc4;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.3);
+        }
+
+        option {
+            background: #16213e;
+            color: #fff;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .results {
+            display: none;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .timeline-entry {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid #4ecdc4;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            animation: slideInLeft 0.5s ease-out;
+            animation-fill-mode: both;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .timeline-entry:nth-child(even) {
+            border-left-color: #ff6b6b;
+        }
+
+        .year-header {
+            font-size: 1.3em;
+            color: #ff6b6b;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .age-info {
+            color: #4ecdc4;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .life-event {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .historical-event {
+            background: rgba(255, 107, 107, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            border-left: 3px solid #ff6b6b;
+        }
+
+        .character-summary {
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.2) 0%, rgba(255, 107, 107, 0.2) 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a8a0 100%);
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚛ COLD WAR LIFE SIMULATOR ⚛</h1>
+        <p class="subtitle">Experience life during the Space Race & Cuban Missile Crisis</p>
+
+        <div id="formSection" class="form-section">
+            <div class="form-group">
+                <label for="birthYear">Birth Year (1930-1965)</label>
+                <select id="birthYear">
+                    <option value="1930">1930</option>
+                    <option value="1935">1935</option>
+                    <option value="1940">1940</option>
+                    <option value="1945">1945</option>
+                    <option value="1950" selected>1950</option>
+                    <option value="1955">1955</option>
+                    <option value="1960">1960</option>
+                    <option value="1965">1965</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="nationality">Nationality</label>
+                <select id="nationality">
+                    <option value="american">American</option>
+                    <option value="soviet">Soviet</option>
+                    <option value="british">British</option>
+                    <option value="cuban">Cuban</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="job">Occupation</label>
+                <select id="job">
+                    <option value="engineer">Aerospace Engineer</option>
+                    <option value="scientist">Nuclear Scientist</option>
+                    <option value="pilot">Military Pilot</option>
+                    <option value="diplomat">Diplomat</option>
+                    <option value="factory">Factory Worker</option>
+                    <option value="teacher">School Teacher</option>
+                    <option value="journalist">Journalist</option>
+                    <option value="farmer">Farmer</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="socialStatus">Social Status</label>
+                <select id="socialStatus">
+                    <option value="elite">Elite (Government/Military Leadership)</option>
+                    <option value="upper">Upper Class (Professionals)</option>
+                    <option value="middle">Middle Class</option>
+                    <option value="working">Working Class</option>
+                    <option value="poor">Lower Class</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="education">Education Level</label>
+                <select id="education">
+                    <option value="graduate">Graduate Degree</option>
+                    <option value="college">College Degree</option>
+                    <option value="high">High School</option>
+                    <option value="elementary">Elementary School</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location Type</label>
+                <select id="location">
+                    <option value="urban">Major City</option>
+                    <option value="suburban">Suburban Area</option>
+                    <option value="rural">Rural Area</option>
+                    <option value="military">Military Base</option>
+                </select>
+            </div>
+
+            <button onclick="generateLife()">Generate Life Story</button>
+        </div>
+
+        <div id="results" class="results"></div>
+    </div>
+
+    <script>
+        const historicalEvents = {
+            1957: "The Space Race intensifies as the Soviet Union launches Sputnik 1, the first artificial satellite, causing widespread panic in the West about Soviet technological superiority.",
+            1958: "NASA is established. The United States enters the Space Race in earnest, pouring resources into aerospace development.",
+            1959: "Fidel Castro comes to power in Cuba, establishing a communist government just 90 miles from American shores.",
+            1960: "A U.S. U-2 spy plane is shot down over Soviet territory, escalating Cold War tensions and collapsing peace talks.",
+            1961: "The Berlin Wall is erected overnight, physically dividing East and West Berlin. Soviet cosmonaut Yuri Gagarin becomes the first human in space.",
+            1962: "The Cuban Missile Crisis brings the world to the brink of nuclear war. For thirteen days in October, humanity holds its breath as Kennedy and Khrushchev face off.",
+            1963: "President John F. Kennedy is assassinated in Dallas. The Nuclear Test Ban Treaty is signed, prohibiting atmospheric nuclear testing.",
+            1964: "The Gulf of Tonkin incident escalates American involvement in Vietnam. Khrushchev is ousted from Soviet leadership.",
+            1965: "The United States begins sustained bombing of North Vietnam. Civil rights marches intensify across America.",
+            1966: "China's Cultural Revolution begins. The Soviet Union achieves the first soft landing on the Moon with Luna 9.",
+            1967: "The Six-Day War erupts in the Middle East. Three Apollo 1 astronauts die in a launch pad fire.",
+            1968: "The Tet Offensive shocks America. Martin Luther King Jr. and Robert Kennedy are assassinated. Soviet tanks crush the Prague Spring.",
+            1969: "Apollo 11 successfully lands on the Moon. Neil Armstrong takes humanity's first steps on another world.",
+            1970: "Nixon extends the Vietnam War into Cambodia, sparking massive protests. Apollo 13 narrowly avoids disaster."
+        };
+
+        function generateLife() {
+            const birthYear = parseInt(document.getElementById('birthYear').value);
+            const nationality = document.getElementById('nationality').value;
+            const job = document.getElementById('job').value;
+            const socialStatus = document.getElementById('socialStatus').value;
+            const education = document.getElementById('education').value;
+            const location = document.getElementById('location').value;
+
+            let html = `
+                <div class="character-summary">
+                    <h2>Your Cold War Life</h2>
+                    <p>Born: ${birthYear} | Nationality: ${nationality.charAt(0).toUpperCase() + nationality.slice(1)} | 
+                    Occupation: ${document.getElementById('job').options[document.getElementById('job').selectedIndex].text}</p>
+                    <p>Social Status: ${document.getElementById('socialStatus').options[document.getElementById('socialStatus').selectedIndex].text}</p>
+                </div>
+            `;
+
+            for (let year = 1957; year <= 1970; year++) {
+                const age = year - birthYear;
+                if (age < 0) continue;
+
+                const lifeStory = generateYearStory(year, age, nationality, job, socialStatus, education, location);
+                
+                html += `
+                    <div class="timeline-entry" style="animation-delay: ${(year - 1957) * 0.1}s">
+                        <div class="year-header">${year}</div>
+                        <div class="age-info">Age: ${age}</div>
+                        <div class="life-event">${lifeStory}</div>
+                        ${historicalEvents[year] ? `<div class="historical-event"><strong>Historical Context:</strong> ${historicalEvents[year]}</div>` : ''}
+                    </div>
+                `;
+            }
+
+            html += '<button class="reset-btn" onclick="resetSimulator()">Create Another Life</button>';
+
+            document.getElementById('results').innerHTML = html;
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('formSection').style.display = 'none';
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generateYearStory(year, age, nationality, job, socialStatus, education, location) {
+            const stories = [];
+
+            // Age-based life events
+            if (age < 5) return "You are a young child, oblivious to the geopolitical tensions swirling around you. Your parents listen anxiously to radio broadcasts about distant conflicts.";
+            
+            if (age >= 5 && age < 12) {
+                stories.push("You attend school where");
+                if (nationality === 'american') {
+                    stories.push("duck-and-cover drills teach you to hide under your desk in case of nuclear attack. The threat feels very real.");
+                } else if (nationality === 'soviet') {
+                    stories.push("you learn about the superiority of the socialist system and the threat of Western imperialism.");
+                }
+            }
+
+            if (age >= 12 && age < 18) {
+                if (nationality === 'american' && year >= 1962) {
+                    stories.push("As a teenager, you watch the Cuban Missile Crisis unfold on television, wondering if this is how the world ends.");
+                } else if (nationality === 'cuban') {
+                    stories.push("Your family debates the revolution daily. Some see hope in Castro's promises; others fear what's to come.");
+                }
+            }
+
+            // Year-specific events affecting different occupations
+            if (year === 1957 && job === 'engineer') {
+                return nationality === 'soviet' ? 
+                    "You work on the Sputnik project, experiencing the euphoria of beating America into space. Your work is celebrated nationally." :
+                    "The Sputnik launch devastates morale at your workplace. Suddenly, everyone demands answers about how the Soviets beat us.";
+            }
+
+            if (year === 1961 && job === 'pilot') {
+                return nationality === 'american' ?
+                    "You follow Gagarin's spaceflight with grudging admiration and fierce determination. The pressure is on to respond." :
+                    "The triumph of Gagarin's orbital flight electrifies your nation. You dream of following in his footsteps.";
+            }
+
+            if (year === 1962) {
+                if (nationality === 'american' && location === 'urban') {
+                    return `During the Cuban Missile Crisis in October, you ${age < 18 ? 'watch your parents' : ''} stockpile canned goods and water. The possibility of nuclear war has never felt more real. You spot Soviet ships on the news and wonder if this is it.`;
+                } else if (nationality === 'cuban') {
+                    return "October brings Soviet missiles to Cuban soil. Your neighborhood transforms into a military zone. Some celebrate the protection; others fear becoming the flashpoint for World War III.";
+                } else if (nationality === 'soviet' && job === 'diplomat') {
+                    return "You work around the clock during the October crisis, translating urgent communications between Moscow and Washington. The fate of the world feels like it rests on precise word choices.";
+                }
+            }
+
+            if (year === 1963 && nationality === 'american') {
+                return age >= 12 ?
+                    "Kennedy's assassination in November shakes you to your core. You watch the funeral procession on television, wondering what kind of country you're living in now." :
+                    "Your parents cry watching the news in November. You don't fully understand why the president's death matters so much, but you feel their grief.";
+            }
+
+            if (year === 1969 && job === 'engineer') {
+                return nationality === 'american' ?
+                    "You watch Neil Armstrong step onto the Moon with tears in your eyes. Years of impossible work have paid off. America has won the Space Race." :
+                    "The American Moon landing stings. Despite your nation's early successes, they've achieved what seemed impossible.";
+            }
+
+            // Default stories based on job and social status
+            if (age >= 18) {
+                const jobStories = {
+                    engineer: nationality === 'american' ? 
+                        "You work on aerospace projects, constantly aware that your innovations could decide the Cold War. The pressure is immense." :
+                        "Your engineering work serves the state's technological advancement. Resources are limited but the sense of purpose is strong.",
+                    scientist: "You conduct research under intense secrecy. The boundary between civilian and military science has completely dissolved.",
+                    pilot: nationality === 'american' ?
+                        "You fly reconnaissance missions or train for potential combat, always aware you could be called to war at any moment." :
+                        "Your flight training emphasizes readiness for the inevitable conflict with Western imperialism.",
+                    diplomat: "You navigate tense negotiations, knowing that miscommunication could trigger nuclear catastrophe.",
+                    factory: socialStatus === 'working' ?
+                        "You work long shifts producing materials for the defense industry. Job security is high but the work is grueling." :
+                        "Your factory contributes to the military-industrial complex. You see the wealth flowing to management, not workers.",
+                    teacher: "You teach a curriculum heavily influenced by Cold War ideology, preparing students for a world defined by ideological conflict.",
+                    journalist: nationality === 'american' ?
+                        "You report on Cold War developments, balancing journalistic integrity with patriotic pressure and government censorship." :
+                        "Your reporting serves the state narrative. Independent journalism is impossible, but you find small ways to hint at truth.",
+                    farmer: "Your agricultural work is politicized. Food production is a matter of national security and ideological pride."
+                };
+
+                return jobStories[job] || "You navigate daily life under the shadow of potential nuclear annihilation.";
+            }
+
+            return stories.join(' ') || "Life continues under the shadow of the Cold War.";
+        }
+
+        function resetSimulator() {
+            document.getElementById('formSection').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
