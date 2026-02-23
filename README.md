@@ -69,7 +69,7 @@ The narratives are written to reflect documented history:
 
 ## Usage
 
-No installation or build step required. Open `index.html` in any modern browser.
+No installation or build step required. Open `index.html` in any modern browser or go to GitHub Pages https://46s8s4s2k9-commits.github.io/cold_war_era_life_sim/.
 
 ```bash
 git clone https://github.com/your-username/cold_war_era_life_sim
